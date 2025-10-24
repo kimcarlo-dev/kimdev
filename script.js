@@ -150,11 +150,11 @@ const schedVideo = document.getElementById('schedVideo');
 const videoSource = document.getElementById('videoSource');
 const playBtn = document.getElementById('playBtn');
 
-// set default volume for videos (40%)
+// set default volume for videos (50%)
 try{
-  if(schedVideo) schedVideo.volume = 0.7;
+  if(schedVideo) schedVideo.volume = 0.5;
   // also set any other video elements on the page
-  document.querySelectorAll('video').forEach(v=>{ try{ v.volume = 0.7 }catch(e){} });
+  document.querySelectorAll('video').forEach(v=>{ try{ v.volume = 0.5 }catch(e){} });
 }catch(e){/* ignore on browsers that block autoplay volume changes */}
 
   // header tray logic: allow dismissing and auto-hide after a delay
