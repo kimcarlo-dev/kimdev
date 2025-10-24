@@ -267,8 +267,8 @@ function openScheduling(type){
 }
 
 // header buttons
-logoBtn.addEventListener('click', ()=> goHome());
-homeBtn.addEventListener('click', ()=> goHome());
+logoBtn.addEventListener('click', ()=> ());
+homeBtn.addEventListener('click', ()=> ());
 aboutBtn.addEventListener('click', ()=> { aboutModal.classList.remove('hidden'); aboutModal.style.display='flex'; });
 
 // centralized close handler for the About modal (used by X button, backdrop click, and Esc key)
@@ -327,7 +327,7 @@ if(hamburgerBtn && mobileMenu){
   });
 }
 // Forward mobile menu button actions to existing handlers
-mobileHome && mobileHome.addEventListener('click', ()=>{ goHome(); if(mobileMenu){ mobileMenu.classList.add('hidden'); hamburgerBtn.setAttribute('aria-expanded','false'); } });
+mobileHome && mobileHome.addEventListener('click', ()=>{ (); if(mobileMenu){ mobileMenu.classList.add('hidden'); hamburgerBtn.setAttribute('aria-expanded','false'); } });
 mobileAbout && mobileAbout.addEventListener('click', ()=>{ aboutModal.classList.remove('hidden'); aboutModal.style.display='flex'; if(mobileMenu){ mobileMenu.classList.add('hidden'); hamburgerBtn.setAttribute('aria-expanded','false'); } });
 // Sync mobile dark toggle with main toggle
 if(mobileDarkToggle){
@@ -342,6 +342,11 @@ if(mobileDarkToggle){
 }
 
 function goHome(){
+    // Ensure video is paused when returning to home
+  if (schedVideo && !schedVideo.paused) {
+    schedVideo.pause();
+    playBtn.textContent = 'Play';
+  }
   schedSection.classList.add('fading-out');
   setTimeout(()=>{
     schedSection.classList.add('hidden');
