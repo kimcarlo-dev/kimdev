@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CPU Scheduling — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body id="app" class="theme-red dark">
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="logo" id="logoBtn">SCHEDULING</div>
+    </div>
+    <div class="header-right">
+      <!-- Hamburger menu for small screens -->
+      <button id="hamburgerBtn" class="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span class="hamburger-box">
+          <span class="hamburger-inner"></span>
+        </span>
+      </button>
+      <button class="header-btn" id="homeBtn" aria-label="Home">
+        <!-- dark mode (white icon) -->
+        <img src="Home_button_white.png" alt="Home" class="btn-icon icon-dark" />
+        <!-- light mode (color icon) -->
+        <img src="Home_button.png" alt="Home" class="btn-icon icon-light" />
+        <span class="btn-label">HOME</span>
+      </button>
+      <button class="header-btn" id="aboutBtn" aria-label="About">
+        <!-- dark mode (white icon) -->
+        <img src="About_button_white.png" alt="About" class="btn-icon icon-dark" />
+        <!-- light mode (color icon) -->
+        <img src="About_button.png" alt="About" class="btn-icon icon-light" />
+        <span class="btn-label">ABOUT</span>
+      </button>
+        <!-- Lottie container kept but moved into mobile menu below -->
+    </div>
+    <!-- Mobile slide-down menu (hidden by default) -->
+    <div id="mobileMenu" class="mobile-menu hidden" aria-hidden="true">
+      <button class="mobile-item" id="mobileHome">
+        <img src="Home_button_white.png" alt="Home" class="mobile-icon icon-dark" />
+        <img src="Home_button.png" alt="Home" class="mobile-icon icon-light" />
+        <span>HOME</span>
+      </button>
+      <button class="mobile-item" id="mobileAbout">
+        <img src="About_button_white.png" alt="About" class="mobile-icon icon-dark" />
+        <img src="About_button.png" alt="About" class="mobile-icon icon-light" />
+        <span>ABOUT</span>
+      </button>
+      <!-- Insert namespaced dark toggle and lottie here. Keep checkbox immediately before .dm-display to satisfy CSS selectors -->
+      <input type="checkbox" id="darkToggle" checked style="display:none" />
+      <div class="dm-display">
+        <label for="darkToggle" class="dm-label">
+          <div class="dm-circle">
+            <svg class="dm-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z" />
+            </svg>
+            <svg class="dm-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        </label>
+      </div>
+      <div id="lottieDarkBtn" class="lottie-dark-btn" aria-hidden="true"></div>
+    </div>
+  </div>
+</header>
+
+<!-- Header Tray: a dismissible info/action block beneath the header -->
+<div id="headerTray" class="header-tray">
+  <div class="header-tray-inner">
+    <div class="header-tray-content">
+      <strong>Tip:</strong>  Enter burst times and press COMPUTE to see the Gantt chart and AWT.
+    </div>
+    <button id="headerTrayClose" class="header-tray-close" aria-label="Close tray">&times;</button>
+  </div>
+</div>
+
+<main class="site-main">
+  <!-- HOME SECTION (mainpageorhomepage.png reference) -->
+  <section id="homeSection" class="home-section">
+      <div class="home-inner">
+        <h1 class="home-title">SCHEDULING</h1>
+        <p class="home-sub">Interactive visualizer for CPU Scheduling algorithms — FCFS, SJF & Priority.</p>
+
+        <section class="algorithms-section">
+          <div class="cards">
+            <div class="card card-fcfs" data-type="fcfs">
+              <img class="card-thumb" src="FCFS_THUMBNAIL.png" alt="FCFS thumbnail" />
+              <div class="card-title">FCFS</div>
+              <div class="card-desc">First come, first serve: the process that arrives first gets CPU first.</div>
+              <button class="card-cta">Start</button>
+            </div>
+
+            <div class="card card-prio" data-type="priority">
+              <img class="card-thumb" src="PRIORITY_THUMBNAIL.png" alt="Priority thumbnail" />
+              <div class="card-title">PRIORITY</div>
+              <div class="card-desc">Each process has a priority; CPU runs the one with the highest priority first.</div>
+              <button class="card-cta">Start</button>
+            </div>
+
+            <div class="card card-sjf" data-type="sjf">
+              <img class="card-thumb" src="SJF_THUMBNAIL.png" alt="SJF thumbnail" />
+              <div class="card-title">SJF</div>
+              <div class="card-desc">Shortest job first: CPU picks the process with the smallest burst time next.</div>
+              <button class="card-cta">Start</button>
+            </div>
+          </div>
+        </section>
+      </div>
+  </section>
+
+  <!-- SCHEDULING SECTION (2ndpage) - hidden initially -->
+  <section id="schedSection" class="sched-section hidden">
+    <div class="sched-grid">
+      <div class="left-panel">
+        <div class="video-section">
+          <video id="schedVideo" class="sched-video" width="320" height="220" controls poster="FCFS_THUMBNAIL.png">
+            <source id="videoSource" src="video/FCFS_VIDEO.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <button class="play-btn" id="playBtn">Play Video</button>
+        </div>
+        <div class="title-anim">
+          <h2 id="schedTitle">FIRST COME FIRST SERVE</h2>
+          <p id="schedDesc" class="muted">First come, first serve: the process that arrives first gets CPU first.</p>
+        </div>
+      </div>
+
+      <div class="card-panel">
+        <div class="secondary-bg" id="secondaryBg"></div>
+        <div class="primary-card" id="primaryCard">
+          <h3 id="cardLabel">FCFS</h3>
+
+          <div class="table head">
+            <div>PROCESS</div><div>BURST TIME</div><div>WAITING TIME</div><div class="prio-head" style="text-align:center">PRIO</div>
+          </div>
+
+          <div class="process-list" id="processList">
+            <!-- JS populates rows -->
+          </div>
+
+          <div class="card-actions-row">
+              <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
+                <button class="compute-btn" id="computeBtn"><span>COMPUTE</span><div class="fill"></div></button>
+                <div class="awt-box" id="awtBox">
+                  <div class="muted small">AWT</div>
+                  <div id="awtValue" class="awt-value">—</div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="right-nav">
+        <div class="nav-btn active" data-type="fcfs">FCFS</div>
+        <div class="nav-btn" data-type="priority">PRIORITY</div>
+        <div class="nav-btn" data-type="sjf">SJF</div>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<!-- solution tray (same tray as before) -->
+<div class="solution-tray" id="solutionTray" aria-hidden="true">
+  <button class="tray-close" id="trayCloseBtn" title="Close">&times;</button>
+  <div class="tray-inner">
+    <div class="tray-left">
+      <div class="tray-head"><h3>Gantt Chart</h3><small class="muted">(visual)</small></div>
+      <div class="gantt" id="ganttArea">
+        <div class="gantt-inner" id="ganttInner"></div>
+        <div class="gantt-ticks" id="ganttTicks"></div>
+      </div>
+    </div>
+    <div class="tray-right">
+      <div class="steps" id="stepsArea">
+        <strong>Computation Steps</strong>
+        <div id="stepsList" class="steps-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- About modal -->
+<div id="aboutModal" class="modal hidden">
+  <div class="modal-card">
+    <button id="closeAbout" class="modal-close" aria-label="Close">&times;</button>
+    <div class="about-content">
+      <h2 class="about-title">
+        <img src="About_button_white.png" alt="About Logo" class="about-logo icon-dark" />
+        <img src="About_button.png" alt="About Logo" class="about-logo icon-light" />
+        <span>ABOUT</span>
+      </h2>
+
+      <h3>What is <em>Scheduling?</em></h3>
+      <p><strong>Scheduling</strong> is an interactive visualizer that demonstrates how CPU scheduling algorithms work — including <strong>First Come First Serve (FCFS)</strong>, <strong>Shortest Job First (SJF)</strong>, and <strong>Priority Scheduling</strong>.
+      It aims to help students and developers easily understand how processes are executed, waiting times are computed, and how different algorithms affect overall CPU performance.</p>
+
+      <h3>Features</h3>
+      <ul>
+        <li>Real-time visualization of CPU scheduling.</li>
+        <li>Animated Gantt Chart for process flow.</li>
+        <li>Step-by-step computation of Average Waiting Time (AWT).</li>
+        <li>Modern light/dark mode for better viewing.</li>
+        <li>Simple and intuitive UI for learning and exploration.</li>
+      </ul>
+
+  <!-- Developer section moved below Future Plans -->
+
+      <h3>Built With</h3>
+      <ul>
+        <li><strong>HTML, CSS, JavaScript</strong></li>
+        <li><strong>GSAP Animations</strong> for smooth transitions</li>
+        <li><strong>Responsive UI Design</strong> for all screens</li>
+      </ul>
+
+      <h3>Educational Purpose</h3>
+      <p>This website was developed as a <strong>learning tool</strong> for BS Computer Engimeering students to visualize CPU scheduling behavior in real time, making it easier to grasp core <em>Operating System</em> concepts.</p>
+
+      <h3>Future Plans</h3>
+      <ul>
+        <li>Add <strong>Round Robin</strong> and <strong>Multilevel Queue</strong> scheduling.</li>
+      </ul>
+
+      <h3>Developer</h3>
+      <p><strong>Developed by:</strong> <em>Kim Carlo Tolentino</em><br>
+      A student developer passionate about creating interactive tools that make complex computing concepts easier to understand.</p>
+
+      <blockquote style="margin: 20px; padding: 10px;">“First, solve the problem. Then, write the code.”<br> <br>“You might not think that programmers are artists, but programming is an extremely creative profession. It's logic-based creativity”<br> <br>“Turning theory into experience through code.”</blockquote>
+
+      <h3>Contact</h3>
+      <p>Have feedback or suggestions?<br>
+      You can reach out at: <strong><a href="mailto:kimcarloongithub@gmail.com">kimcarloongithub@gmail.com</a></strong></p>
+
+      <h3>Get the code</h3>
+      <p>If you want the code it is posted in my repository — contact me via email to request access.</p>
+
+      <div class="modal-actions"></div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

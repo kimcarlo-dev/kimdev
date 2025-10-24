@@ -1,0 +1,893 @@
+/* Remove gap between About logo and text */
+.about-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  text-align: center;
+  margin-bottom: 1.3em;
+  margin: 0;
+  z-index: 6;
+}
+.about-title .about-logo {
+  height: 1.35em;
+  width: auto;
+  vertical-align: middle;
+  display: inline-block;
+  margin-right: 0;
+}
+.about-title .icon-light { display: none; }
+.about-title .icon-dark { display: inline-block; }
+body.light .about-title .icon-light { display: inline-block; }
+body.light .about-title .icon-dark { display: none; }
+/* Load Altron font for the SCHEDULING logo (local files) */
+@font-face {
+  font-family: 'altron';
+  src: url('./altron.ttf') format('truetype'), url('./altron.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+/* Shake effect for error */
+.shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-8px); }
+  40%, 60% { transform: translateX(8px); }
+  100% { transform: translateX(0); }
+}
+/* Close button for Gantt chart tray */
+.tray-close {
+  position: absolute;
+  top: 18px;
+  right: 28px;
+  z-index: 110;
+  background: rgba(0,0,0,0.12);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 28px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.18s, color 0.18s;
+}
+.tray-close:hover {
+  background: rgba(255,255,255,0.18);
+  color: var(--accent-red);
+}
+body.light .tray-close {
+  background: rgba(0,0,0,0.06);
+  color: #111;
+}
+body.light .tray-close:hover {
+  background: rgba(0,0,0,0.12);
+  color: var(--accent-red);
+}
+/* style.css - Montserrat, Grid+Flexbox layout, dark theme by default */
+
+:root{
+  --bg:#050505;
+  --card:#0a0a0a;
+  --muted:#bdbdbd;
+  --text:#ececec;
+  --input:#ffffff;
+  --accent-red:#e22a0b;
+  --accent-red-glow: rgba(226,42,11,0.18);
+  --accent-blue:#2b3bff;
+  --accent-blue-glow: rgba(43,59,255,0.18);
+  --accent-purple:#a35bff;
+  --accent-purple-glow: rgba(163,91,255,0.14);
+  --glass: rgba(255,255,255,0.03);
+  --duration: 0.9s;
+  --compute-fill-duration: 1.4s;
+  --secondary-wipe-duration: 560ms;
+  --secondary-glow-duration: 3s;
+  --gantt-idle: #777777;
+}
+
+body.dark{background:var(--bg);color:var(--text)}
+body.light{ --bg:#ffffff; --card:#f6f6f6; --muted:#555555; --text:#111111; --input:#000000; background:var(--bg); color:var(--text)}
+
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',system-ui,-apple-system,sans-serif}
+
+.site-header{position:sticky;top:0;background:transparent;z-index:40;border-bottom:1px solid rgba(255, 255, 255, 0.03);transition:transform 220ms ease, opacity 220ms ease}
+/* Hidden state (slide up) */
+.site-header.header-hidden{transform:translateY(-110%);opacity:0}
+.header-inner{max-width:2080px;display:flex;justify-content:space-between;align-items:center;padding:18px 12px;padding-bottom:12px;}
+.logo{font-family:'altron', 'Montserrat', system-ui, -apple-system, sans-serif; font-weight:800;letter-spacing:6px;font-size:18px;cursor:pointer}
+.header-right{display:flex;gap:12px;align-items:center}
+
+/* Use Altron for prominent titles across the site */
+.card .card-title,
+.home-title,
+.about-content h2,
+.title-anim h2,
+.process-block .label {
+  font-family: 'altron', 'Montserrat', system-ui, -apple-system, sans-serif;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+/* Use Montserrat for scheduling table headers and the PROCESS column labels (P1..P6) */
+.table.head > div,
+.process-block > .col-process,
+.process-block .label {
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+/* Keep primary card internals using the base Montserrat; only the primary card H3 should use Altron */
+.primary-card { font-family: 'Montserrat', system-ui, -apple-system, sans-serif; }
+.primary-card h3 { font-family: 'altron', 'Montserrat', system-ui, -apple-system, sans-serif; letter-spacing:8px; }
+
+/* Apply Altron to the highlighted/selected right-nav item */
+.right-nav .nav-btn.active { font-family: 'altron', 'Montserrat', system-ui, -apple-system, sans-serif; font-weight:800; letter-spacing:2px }
+.header-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:18px;background:rgba(255,255,255,0.02);cursor:pointer;border:1px solid rgba(255,255,255,0.02);color:var(--text);}
+.header-btn .btn-icon{width:22px;height:22px;display:inline-block;flex-shrink:0;object-fit:contain}
+.header-btn .btn-label{font-weight:700;letter-spacing:1px;font-size:13px}
+.header-btn img{display:block}
+
+/* In light mode show icons darker and remove inversion */
+body.light .header-btn .btn-icon{opacity:0.95}
+
+/* Allow SVGs to inherit current color when using stroke="currentColor" */
+.header-btn .btn-icon { color: inherit }
+
+/* Theme-specific icon visibility: show white icons in dark mode, colored icons in light mode */
+/* Default: hide light icons, show dark icons (assume initial body.dark) */
+.header-btn .icon-light{display:none}
+.header-btn .icon-dark{display:inline-block}
+
+body.light .header-btn .icon-light{display:inline-block}
+body.light .header-btn .icon-dark{display:none}
+
+/* Ensure images align and don't stretch the header */
+.header-btn .btn-icon{margin-right:2px}
+.dark-toggle{display:flex;align-items:center;gap:8px}
+.dark-toggle input{transform:scale(1.1)}
+
+.hamburger{display:inline-flex;border:none;background:transparent;padding:8px;border-radius:8px;cursor:pointer}
+.hamburger-box{width:24px;height:18px;display:inline-block;position:relative}
+.hamburger-inner, .hamburger-inner::before, .hamburger-inner::after{display:block;background:var(--muted);height:2px;border-radius:2px;position:absolute;left:0;right:0}
+.hamburger-inner{top:50%;transform:translateY(-50%)}
+.hamburger-inner::before{content:'';top:-7px}
+.hamburger-inner::after{content:'';top:7px}
+.hamburger[aria-expanded="true"] .hamburger-inner{background:transparent}
+.hamburger[aria-expanded="true"] .hamburger-inner::before{transform:rotate(45deg);top:0}
+.hamburger[aria-expanded="true"] .hamburger-inner::after{transform:rotate(-45deg);top:0}
+
+/* Mobile slide-down menu */
+.mobile-menu{position:absolute;right:18px;top:70px;background:var(--card);border-radius:10px;padding:10px;box-shadow:0 18px 40px rgba(0,0,0,0.6);z-index:120;display:flex;flex-direction:column;gap:14px;border:1px solid rgba(255,255,255,0.04);min-width:180px}
+.mobile-menu .mobile-item{background:transparent;border:none;padding:14px 14px;border-radius:8px;text-align:left;color:var(--text);cursor:pointer}
+.mobile-menu .mobile-item:hover{background:rgba(255,255,255,0.02)}
+.mobile-toggle{display:flex;align-items:center;gap:8px}
+
+/* Mobile menu icons */
+.mobile-icon{width:22px;height:22px;display:inline-block;vertical-align:middle;margin-right:10px;object-fit:contain}
+.mobile-item .icon-light{display:none}
+.mobile-item .icon-dark{display:inline-block}
+body.light .mobile-item .icon-light{display:inline-block}
+body.light .mobile-item .icon-dark{display:none}
+
+/* Use hamburger as the primary control on all viewports: hide desktop buttons and dark-toggle */
+.header-right > .header-btn, .header-right .dark-toggle{display:none}
+
+/* --- Namespaced dark-mode toggle styles (adapted) --- */
+.dm-display{display:flex;align-items:center;justify-content:center}
+.dm-label{width:96px;height:48px;border-radius:999px;background:#F3F3F3;box-shadow:inset 8px 8px 20px rgba(0,0,0,0.05);cursor:pointer;position:relative;display:block}
+.dm-circle{width:36px;height:36px;border-radius:99px;background:#ffffff;box-shadow:8px 8px 16px rgba(0,0,0,0.05), inset -8px -8px 20px rgba(0,0,0,0.05);position:absolute;top:50%;left:6%;transform:translate(0%,-50%);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:all 220ms ease}
+.dm-label svg{width:20px;position:absolute}
+.dm-sun{color:#FFD600;opacity:1;transform:translateY(0%);transition:all 320ms ease}
+.dm-moon{color:#fff;opacity:0;transform:translateY(-100%);transition:all 320ms ease}
+
+/* When the hidden checkbox (#darkToggle) is checked, adjust visuals */
+#darkToggle:checked + .dm-display .dm-label{background:#1F1F21;box-shadow:inset 10px 10px 30px rgba(0,0,0,0.5)}
+#darkToggle:checked + .dm-display .dm-label .dm-circle{left:calc(100% - 10px);transform:translate(-100%,-50%);background:#2C2C2F;box-shadow:10px 10px 20px rgba(0,0,0,0.5), inset -10px -10px 30px rgba(0,0,0,0.5)}
+#darkToggle:checked + .dm-display .dm-label .dm-circle .dm-sun{transform:translateY(150%);opacity:0}
+#darkToggle:checked + .dm-display .dm-label .dm-circle .dm-moon{transform:translateY(0%);opacity:1}
+
+.dm-label:active .dm-circle{width:56px}
+/* --- end namespaced toggle styles --- */
+
+/* Keep hamburger aligned in header-right */
+.header-right .hamburger{margin-right:6px}
+
+@media (max-width:800px){
+  .mobile-menu{right:12px;left:12px;top:72px;border-radius:8px}
+}
+
+/* Utility to toggle visibility */
+.hidden{display:none !important}
+
+/* Header Tray (dismissible block overlaying the page beneath the header) */
+/*
+  Changed from sticky to fixed so the tip header overlays content and stays visible while
+  the main header remains at the top. We also add an adjacent selector to push the main
+  content down when the tray is visible so it doesn't get covered.
+*/
+.header-tray{
+  position:fixed;
+  top:64px; /* matches header height (header is sticky at top:0) */
+  left:0;
+  right:0;
+  z-index:120; /* above header (header z-index:40) and mobile menus */
+  background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.35));
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  padding:10px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition:transform 200ms ease, opacity 180ms ease;
+}
+.header-tray-inner{max-width:1300px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.header-tray-content{color:var(--muted);font-size:14px}
+.header-tray-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:6px;border-radius:6px}
+.header-tray-close:hover{color:var(--text);background:rgba(255,255,255,0.02)}
+.header-tray.hidden{display:none}
+
+/* When the header tray is present (not hidden) we add top padding to the following
+   main content so it isn't covered by the fixed tray. Adjust value if you change
+   the tray padding/height above. */
+.header-tray:not(.hidden) + .site-main {
+  padding-top: 72px; /* offset to account for the tray height */
+}
+
+/* Modal (About) popup styles */
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:300;transition:opacity 220ms ease, visibility 220ms ease;opacity:0;visibility:hidden}
+.modal .modal-card{width:min(720px,92%);max-width:720px;background:var(--card);color:var(--text);border-radius:12px;padding:20px 22px;box-shadow:0 18px 48px rgba(0,0,0,0.6);transform:translateY(12px) scale(0.98);transition:transform 220ms ease, opacity 220ms ease;opacity:0;position:relative}
+.modal .modal-card h2{margin-bottom:24px}
+.modal .modal-actions{display:flex;justify-content:flex-end;margin-top:18px}
+.modal .modal-actions button{padding:8px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text);cursor:pointer}
+.modal:not(.hidden){opacity:1;visibility:visible}
+.modal:not(.hidden) .modal-card{opacity:1;transform:translateY(0) scale(1)}
+
+/* About modal: make the content scrollable when tall */
+.modal .modal-card {
+  padding: 18px 18px 12px 18px;
+}
+.about-content{
+  max-height: calc(72vh);
+  overflow: auto;
+  padding-right: 8px; /* ensure scrollbar doesn't overlap content */
+}
+.modal-close{
+  position:absolute;
+  right:36px;
+  top:20px;
+  width:44px;
+  height:44px;
+  border-radius:10px;
+  background:rgba(0,0,0,0.6);
+  color:#fff;
+  border:none;
+  font-size:40px;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,0,0,0.4);
+  z-index: 420; /* above the scrolling content */
+}
+body.light .modal-close{ background:#fff;color:#111;border:1px solid rgba(0,0,0,0.06) }
+.about-content h2{letter-spacing:4px;margin-bottom:8px;text-align:center}
+.about-content h3{margin-top:14px;margin-bottom:8px}
+.about-content p, .about-content li{color:var(--muted);line-height:1.5}
+.about-content ul{margin-left:18px;margin-bottom:8px}
+.about-content blockquote{margin:12px 0;padding-left:12px;border-left:3px solid rgba(255,255,255,0.06);color:var(--text);font-style:italic}
+
+/* separators between each about section block */
+.about-content > * { padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.about-content > *:last-child { border-bottom: none; }
+.about-content ul, .about-content p { margin-bottom: 18px; }
+
+/* light theme separator color */
+body.light .about-content > * { border-bottom: 1px solid rgba(0,0,0,0.08); }
+body.light .about-content blockquote { border-left-color: rgba(0,0,0,0.08); }
+
+@media (max-width:480px){
+  .about-content > * { padding: 12px 0; }
+  .about-content ul, .about-content p { margin-bottom: 12px; }
+}
+
+/* Keep title and its description visually attached: remove separator/padding between title and following element */
+.about-content h2, .about-content h3 {
+  padding-bottom: 0;
+  border-bottom: none;
+  margin-bottom: 6px;
+}
+.about-content h2 + *, .about-content h3 + * {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+
+/* MAIN LAYOUT */
+.site-main{min-height:calc(100vh - 72px)}
+
+/* HOME SECTION */
+.home-section{display:flex;align-items:center;justify-content:center;padding:40px 24px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent)}
+.home-inner{text-align:center;max-width:1000px;}
+.home-title{font-size:56px;letter-spacing:6px;margin-bottom:12px}
+.home-sub{color:var(--muted);margin-bottom:28px}
+
+/* cards */
+.algorithms-section {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 32px;
+}
+.cards {
+  display: flex;
+  /* larger row and column gaps for clearer separation */
+  row-gap:12px;
+  column-gap: 20px; /* row-gap column-gap */
+  flex-wrap: wrap;
+}
+.card{width:260px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;box-shadow:0 10px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:transform 300ms ease-out, box-shadow 300ms ease-out}
+.card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 18px 50px rgba(0,0,0,0.7)}
+.card{text-align:left}
+.card .card-title{font-weight:800;font-size:20px;letter-spacing:2px;padding:12px 16px 0;text-align:left}
+.card .card-desc{color:var(--muted);margin:8px 16px 18px;text-align:left}
+.card .card-cta{padding:8px 14px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text);cursor:pointer;transition:all 200ms ease-out;margin:8px 16px 20px 16px;text-align:left}
+.card .card-thumb{width:100%;height:140px;object-fit:cover;border-top-left-radius:12px;border-top-right-radius:12px}
+.card-fcfs{box-shadow:0 8px 40px rgba(226,42,11,0.06);border-left:6px solid var(--accent-red)}
+.card-sjf{box-shadow:0 8px 40px rgba(163,91,255,0.06);border-left:6px solid var(--accent-purple)}
+.card-prio{box-shadow:0 8px 40px rgba(43,59,255,0.06);border-left:6px solid var(--accent-blue)}
+
+/* SCHEDULING SECTION */
+.sched-section{padding:36px}
+.hidden{display:none !important}
+
+.sched-grid{display:grid;grid-template-columns:1fr 640px 220px;gap:12px;align-items:start;max-width:1360px;margin:0 auto}
+.left-panel {
+  padding: 6px 12px;
+  display: flex-end;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Aligns everything to the top */
+  min-height: 400px;
+  max-width: 100%;
+  width: 400px;
+  height: 100%;
+}
+
+.video-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* No margin-bottom below the video */
+}
+.sched-video {
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  margin-bottom: 12px;
+  display: block;
+  max-width: 100%;
+}
+.play-btn {
+  padding: 10px 22px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 12px rgba(226,42,11,0.12);
+  transition: background 0.2s;
+}
+.play-btn.theme-red {
+  background: var(--accent-red);
+  box-shadow: 0 2px 12px rgba(226,42,11,0.12);
+}
+.play-btn.theme-blue {
+  background: var(--accent-blue);
+  box-shadow: 0 2px 12px rgba(43,59,255,0.12);
+}
+.play-btn.theme-purple {
+  background: var(--accent-purple);
+  box-shadow: 0 2px 12px rgba(163,91,255,0.12);
+}
+.play-btn.theme-red:hover {
+  background: #b71c1c;
+}
+.play-btn.theme-blue:hover {
+  background: #1a237e;
+}
+.play-btn.theme-purple:hover {
+  background: #6a1b9a;
+}
+.play-btn:hover {
+  background: #b71c1c;
+}
+.title-anim {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 0;
+  margin-top: 40px; /* Remove auto if present */
+}
+.title-anim h2 {
+  font-size: 28px;
+  letter-spacing: 4px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+.title-anim .muted {
+  color: var(--muted);
+  text-align: left;
+}
+
+.compute-btn {
+  margin-top: 38px;
+}
+.compute-btn{position:relative;padding:12px 20px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:linear-gradient(180deg, rgba(255,255,255,0.012), rgba(0,0,0,0.12));color:var(--text);cursor:pointer;overflow:hidden;transition:transform 220ms ease, box-shadow 220ms ease;z-index:5}
+.compute-btn span{position:relative;z-index:3;font-weight:700;letter-spacing:1px}
+.compute-btn .fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));transform-origin:bottom;transition:height var(--compute-fill-duration) cubic-bezier(.2,.9,.2,1);z-index:1;mix-blend-mode:screen;border-radius:6px}
+.compute-btn:hover .fill{height:100%}
+.compute-btn:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 18px 48px rgba(163,91,255,0.08),0 6px 18px rgba(0,0,0,0.6)}
+/* theme solid fills (underneath the translucent gradient) */
+.compute-btn::before{content:'';position:absolute;left:0;right:0;bottom:0;height:0%;z-index:0;border-radius:6px;transition:height var(--compute-fill-duration) cubic-bezier(.2,.9,.2,1)}
+body.theme-red .compute-btn::before{background:linear-gradient(180deg, rgba(226,42,11,0.14), rgba(226,42,11,0.2));}
+body.theme-blue .compute-btn::before{background:linear-gradient(180deg, rgba(43,59,255,0.14), rgba(43,59,255,0.2));}
+body.theme-purple .compute-btn::before{background:linear-gradient(180deg, rgba(163,91,255,0.14), rgba(163,91,255,0.2));}
+.compute-btn:hover::before{height:100%}
+/* make the text glow when filled/hovered */
+.compute-btn span{transition:text-shadow 220ms ease, color 220ms ease}
+body.theme-red .compute-btn:hover span{color:#fff; text-shadow:0 0 18px rgba(226,42,11,0.8), 0 0 36px rgba(226,42,11,0.28)}
+body.theme-blue .compute-btn:hover span{color:#fff; text-shadow:0 0 18px rgba(43,59,255,0.8), 0 0 36px rgba(43,59,255,0.28)}
+body.theme-purple .compute-btn:hover span{color:#fff; text-shadow:0 0 18px rgba(163,91,255,0.8), 0 0 36px rgba(163,91,255,0.28)}
+
+/* neon glow per theme for compute button */
+
+/* Always-on neon glow for compute button */
+body.theme-red .compute-btn {
+  box-shadow: 0 0 0 2px rgba(226,42,11,0.22), 0 0 18px 4px rgba(226,42,11,0.32), 0 0 48px 8px rgba(226,42,11,0.18);
+}
+body.theme-blue .compute-btn {
+  box-shadow: 0 0 0 2px rgba(43,59,255,0.22), 0 0 18px 4px rgba(43,59,255,0.32), 0 0 48px 8px rgba(43,59,255,0.18);
+}
+body.theme-purple .compute-btn {
+  box-shadow: 0 0 0 2px rgba(163,91,255,0.22), 0 0 18px 4px rgba(163,91,255,0.32), 0 0 48px 8px rgba(163,91,255,0.18);
+}
+
+.compute-btn::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 10px;
+  pointer-events: none;
+  transition: opacity 220ms ease, filter 220ms ease;
+  opacity: 1;
+  z-index: 2;
+}
+body.theme-red .compute-btn::after {
+  box-shadow: 0 0 28px 0 rgba(226,42,11,0.38), 0 0 80px 0 rgba(226,42,11,0.22);
+}
+body.theme-blue .compute-btn::after {
+  box-shadow: 0 0 28px 0 rgba(43,59,255,0.38), 0 0 80px 0 rgba(43,59,255,0.22);
+}
+body.theme-purple .compute-btn::after {
+  box-shadow: 0 0 28px 0 rgba(163,91,255,0.38), 0 0 80px 0 rgba(163,91,255,0.22);
+}
+
+/* primary card */
+.card-panel{position:relative;display:flex;align-items:center;justify-content:center}
+.secondary-bg{position:absolute;/* place underneath and match primary card size */right:-50px;top:-33px;/* slightly more to the right and a bit lower */width:650px;height:calc(90% + 38px);border-radius:10px;z-index:1;opacity:1;transition:transform 360ms ease, box-shadow 360ms ease;}
+
+/* solid back layer and glow per theme */
+body.theme-red .secondary-bg{background:var(--accent-red);box-shadow:0 42px 200px rgba(226,42,11,0.18);}
+body.theme-blue .secondary-bg{background:var(--accent-blue);box-shadow:0 42px 200px rgba(43,59,255,0.18);}
+body.theme-purple .secondary-bg{background:var(--accent-purple);box-shadow:0 42px 200px rgba(163,91,255,0.16);}
+
+/* neon outer glow (pseudo element) */
+.secondary-bg::after{content:'';position:absolute;inset:-48px;border-radius:14px;filter:blur(84px);opacity:0;transition:opacity 360ms ease, transform 360ms ease}
+body.theme-red .secondary-bg::after{background:var(--accent-red);}
+body.theme-blue .secondary-bg::after{background:var(--accent-blue);}
+body.theme-purple .secondary-bg::after{background:var(--accent-purple);}
+.secondary-bg.glow::after{opacity:0.23;transform:scale(0.8)}
+
+/* pulsing glow animation when class .glow is present */
+.secondary-bg.glow{animation:secondary-glow var(--secondary-glow-duration) ease-in-out infinite;box-shadow:0 48px 200px rgba(0,0,0,0.16) inset}
+
+/* thin white outline around primary card */
+.primary-card::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  pointer-events: none;
+  z-index: 2;
+}
+body.light .primary-card::after {
+  border: 1px solid rgba(0,0,0,0.18);
+}
+@keyframes secondary-glow{0%{transform:translateY(0);filter:brightness(1);opacity:1}50%{transform:translateY(-6px);filter:brightness(1.04);opacity:0.96}100%{transform:translateY(0);filter:brightness(1);opacity:1}}
+
+/* optional wipe-in used when switching themes */
+.secondary-bg.wipe{animation:wipe-in 560ms ease-in}
+@keyframes wipe-in{0%{transform:translateX(-30px);opacity:0}60%{transform:translateX(8px);opacity:0.9}100%{transform:translateX(0);opacity:1}}
+.primary-card{width:640px;background:var(--card);border-radius:10px;padding:20px 110px 20px 20px;border:1px solid rgba(255,255,255,0.04);position:relative;z-index:3}
+.primary-card h3 {
+  text-align: center;
+  margin-bottom: 28px;
+  font-weight: 800;
+  letter-spacing: 8px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  top: 18px;
+}
+.primary-card {
+  position: relative;
+  padding-top: 56px;
+}
+.primary-card {
+  position: relative;
+}
+.table{display:grid;grid-template-columns:120px 160px 120px;gap:12px;align-items:center;margin-top:6px;width:100%;box-sizing:border-box}
+
+/* when primary card has priority enabled, use 4-column layout */
+.primary-card.has-prio .table{grid-template-columns:120px 160px 120px 96px}
+
+/* hide the column container for prio by default so rows don't wrap */
+.col-prio{display:none}
+.primary-card.has-prio .col-prio{display:flex;align-items:center;justify-content:center}
+
+/* hide PRIO header and priority inputs by default; shown when .has-prio is present */
+.table.head .prio-head{display:none}
+.primary-card.has-prio .table.head .prio-head{display:flex}
+
+/* show prio header and inputs when primary card has-prio */
+.primary-card.has-prio .prio-head{display:block}
+.primary-card.has-prio .priority-input{display:inline-block}
+
+/* hide priority inputs by default (for FCFS and SJF) */
+.priority-input{display:none}
+.process-list{display:flex;flex-direction:column;gap:10px;margin-top:10px;width:100%;box-sizing:border-box}
+
+/* align header and row cells consistently */
+.table.head > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  letter-spacing: -1px;
+  white-space: nowrap;
+}
+.table.head > div:nth-child(3){/* WAITING TIME */
+  justify-content:center;
+}
+.table.head > div:first-child{justify-content:flex-start;padding-left:8px}
+.process-block > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+}
+.process-block > .col-process{justify-content:flex-start;padding-left:8px}
+.burst-wrap{display:flex;justify-content:center}
+.col-burst input.burst-input{width:120px}
+.col-prio input.priority-input {
+  width: 48px;
+  margin-left: -28px;
+}
+
+/* process row */
+.process-block{display:grid;grid-template-columns:120px 160px 120px;align-items:center;gap:12px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04)}
+.primary-card.has-prio .process-block{grid-template-columns:120px 160px 120px 96px}
+.label { font-weight: 500; }
+.burst-wrap{width:160px}
+input.burst-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.5);
+  color: var(--input);
+  text-align: center;
+  font-weight: 400;
+}
+/* placeholder styling: 50% opacity and hide when the field is focused */
+input.burst-input::placeholder{ color: rgba(255,255,255,0.5); }
+input.burst-input:focus::placeholder{ color: transparent; }
+input.burst-input::placeholder{color:var(--muted)}
+.waiting-display {
+  width: 120px;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 400;
+}
+.priority-input {
+  width: 48px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.5);
+  color: var(--input);
+  text-align: center;
+  font-weight: 400;
+}
+
+/* AWT box */
+.awt-box {
+  /* place the AWT at the right-middle of the primary card (backup positioning) */
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 72px;
+  height: 120px;
+  background: rgba(255,255,255,0.02);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  color: var(--muted);
+  font-weight: 700;
+  padding: 8px 12px;
+  gap: 6px;
+}
+.awt-box .awt-value{font-size:20px;color:var(--text)}
+
+/* right nav */
+.right-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  align-items: flex-end;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  margin-right: 12px;
+}
+.nav-btn {
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 10px;
+  transition: all 220ms cubic-bezier(.2,.9,.2,1);
+  text-align: right;
+  min-width: 90px;
+  font-size: 15px;
+  font-weight: 400;
+  background: none;
+  outline: none;
+  border: none;
+  position: relative;
+}
+.nav-btn:hover{transform:scale(1.05);opacity:1}
+/* Active nav button: theme glow, larger, bold */
+.nav-btn.active {
+  opacity: 1;
+  font-weight: 700;
+  font-size: 19px;
+  transform: scale(1.18);
+  color: #fff;
+  z-index: 1;
+}
+body.light .nav-btn.active {
+  color: #111;
+}
+body.theme-red .nav-btn.active {
+  text-shadow: 0 0 16px rgba(226,42,11,0.85), 0 0 32px rgba(226,42,11,0.45);
+}
+body.theme-blue .nav-btn.active {
+  text-shadow: 0 0 16px rgba(43,59,255,0.85), 0 0 32px rgba(43,59,255,0.45);
+}
+body.theme-purple .nav-btn.active {
+  text-shadow: 0 0 16px rgba(163,91,255,0.85), 0 0 32px rgba(163,91,255,0.45);
+}
+
+/* solution tray */
+.solution-tray{position:fixed;left:0;right:0;bottom:0;transform:translateY(110%);transition:transform var(--duration) ease-in;padding:20px;background:linear-gradient(0deg, rgba(0,0,0,0.95), rgba(0,0,0,0.8));border-top:2px solid rgba(255,255,255,0.04);z-index:100}
+.solution-tray.open{transform:translateY(0%)}
+.tray-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 420px;gap:20px;align-items:start}
+.tray-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.gantt{background:rgba(255,255,255,0.02);border-radius:8px;padding:8px 10px 6px;height:110px;position:relative;overflow:hidden}
+.gantt-inner{display:flex;height:44px;align-items:center;gap:6px;padding:6px;justify-content:flex-start}
+.gantt-bar{height:44px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,0.6);padding:4px 8px;min-width:10px;white-space:nowrap;font-size:13px}
+.gantt-ticks{position:absolute;left:12px;right:12px;bottom:4px;pointer-events:none;height:18px}
+.gantt-tick{position:absolute;transform:translateX(-50%);color:var(--muted);font-weight:600;font-size:13px}
+
+/* steps */
+.steps{background:rgba(255,255,255,0.02);border-radius:8px;padding:12px;color:var(--muted);font-size:14px;height:140px;overflow:auto}
+
+/* AWT summary inside the solution tray */
+.tray-awt{
+  font-size:18px;
+  font-weight:800;
+  color:var(--text);
+  margin-bottom:10px;
+  padding:8px 10px;
+  border-radius:8px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow:0 8px 28px rgba(163,91,255,0.06), 0 0 36px rgba(163,91,255,0.04);
+  text-align:left;
+}
+
+/* glowing text effect; theme-aware */
+.tray-awt.glow {
+  text-shadow: 0 0 12px rgba(255,255,255,0.06), 0 0 24px var(--accent-purple-glow);
+}
+body.theme-red .tray-awt.glow { text-shadow: 0 0 12px rgba(255,255,255,0.06), 0 0 24px var(--accent-red-glow); }
+body.theme-blue .tray-awt.glow { text-shadow: 0 0 12px rgba(255,255,255,0.06), 0 0 24px var(--accent-blue-glow); }
+body.theme-purple .tray-awt.glow { text-shadow: 0 0 12px rgba(255,255,255,0.06), 0 0 24px var(--accent-purple-glow); }
+
+/* responsive */
+@media(max-width:1100px){
+  .sched-grid{grid-template-columns:1fr;gap:18px;padding:12px}
+  .right-nav{
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    position:relative;
+    top:auto;
+    right:auto;
+    transform:none;
+    /* increase top margin so there's more space between primary card and the nav */
+    margin: 28px auto 12px;
+    justify-content:center;
+    width:100%;
+    /* tighten gaps between the nav buttons */
+    gap:8px;
+    margin-right:0;
+    grid-row:2; /* place nav as the second row in the single-column grid */
+    z-index:6;
+  }
+  .title-anim{align-items:center;text-align:center}
+  /* tighten individual buttons (mobile) so name/function sits closer to the nav */
+  .right-nav .nav-btn{
+    min-width:72px;
+    padding:32px 20px;
+    font-size:14px;
+    opacity:0.95;
+  }
+  /* add extra breathing room below the primary card (only in this breakpoint) */
+  .primary-card{
+    margin-bottom:46px;
+  }
+  /* ensure primary card sits beneath the nav */
+  .primary-card{
+    grid-row:2;
+  }
+  .awt-box{display:none}
+  .home-title{font-size:36px}
+  .cards{gap:16px}
+  .card{width:100%}
+  /* Make left panel stack-friendly on narrow screens */
+  .left-panel{
+    align-items:flex-start;
+    padding:8px 12px;
+    width:100%;
+    box-sizing:border-box;
+  }
+  .video-section{width:100%;display:block}
+  .sched-video{width:100%;max-width:100%;height:auto}
+  .title-anim{text-align:center;align-items:center}
+  /* center the play/stop button under the video on narrow screens */
+  .play-btn{display:block;margin:12px auto 18px auto}
+}
+
+/* Medium screens: show homepage cards in two columns for better use of space */
+@media (min-width:700px) and (max-width:1099px) {
+  .algorithms-section { justify-content: center; }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    column-gap: 28px; /* row-gap column-gap */
+    align-items: start;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .card { width: 100%; }
+  /* slightly shorter thumbnails to fit two-up layout */
+  .card .card-thumb { height: 120px; }
+}
+/* Mobile tweaks for Gantt readability */
+@media (max-width:760px){
+  /* stack tray columns so gantt sits above the steps */
+  .tray-inner{grid-template-columns:1fr;}
+
+  /* make gantt scroll horizontally on small screens and increase height */
+  .gantt{height:96px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+  .gantt-inner{display:flex;gap:6px;align-items:center;min-width:420px}
+
+  /* ensure ticks are visible and not clipped */
+  .gantt-ticks{position:absolute;left:8px;right:8px;bottom:6px}
+}
+
+/* slightly smaller gantt-bar text on very small screens */
+@media (max-width:420px){
+  .gantt-bar{font-size:12px;font-weight:500;padding:3px 8px}
+}
+@media (max-width:1080px){
+  .header-inner{
+    flex-wrap:nowrap;
+    padding:10px 12px;
+    gap:0; /* remove gap so left+right sit together */
+    align-items:center;
+    justify-content:flex-start; /* cluster items at the start */
+  }
+
+  /* keep both groups compact and side-by-side */
+  .header-left,
+  .header-right{
+    display:flex;
+    flex:0 0 auto;     /* don't grow to fill space */
+    align-items:center;
+    gap:8px;            /* small internal spacing */
+    margin:0;
+    padding:0;
+    order:unset;
+  }
+
+  /* explicit ordering (left then right) */
+  .header-left{ order: 2; }
+  .header-right{ order: 1; }
+
+  /* remove extra margins from direct children so groups remain tight */
+  .header-left > *, .header-right > * { margin:0; }
+
+  /* ensure logo and hamburger don't force extra spacing */
+  .logo, .hamburger, .hamburger-box { flex:0 0 auto; white-space:nowrap; }
+
+  /* if any element had automatic margin to push items apart, neutralize it */
+  .header-inner > * { margin-left:0; margin-right:0; }
+}
+
+/* Light-mode overrides for trays, cards and insertable rows */
+body.light .primary-card{
+  background: #ffffff;
+  color: var(--text);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.06);
+}
+body.light .process-block{
+  background: #fff;
+  color: #111;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+body.light input.burst-input, body.light .priority-input{
+  background: #f6f6f6;
+  color: #111;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+body.light .awt-box{ background: #fff; color: #111; box-shadow: 0 6px 18px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.06) }
+
+/* Solution tray / Gantt / Steps should appear light in light mode */
+body.light .solution-tray{ background: linear-gradient(0deg, rgba(255,255,255,0.98), rgba(255,255,255,0.98)); border-top:1px solid rgba(0,0,0,0.06); }
+body.light .gantt{ background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border:1px solid rgba(0,0,0,0.06); }
+body.light .gantt-bar{ box-shadow: 0 6px 18px rgba(0,0,0,0.06); color: #111 }
+body.light .gantt-tick, body.light .gantt-ticks, body.light .gantt-inner{ color: #333 }
+body.light .steps{ background: #fff; color: #333; border:1px solid rgba(0,0,0,0.04); box-shadow: 0 8px 28px rgba(0,0,0,0.04) }
+body.light .tray-awt{ background: #fff; color: #111; box-shadow: 0 8px 28px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.04) }
+
+/* Mobile menu and modal card backgrounds in light mode */
+body.light .mobile-menu{ background: #fff; color: #111; border:1px solid rgba(0,0,0,0.06); box-shadow:0 12px 36px rgba(0,0,0,0.06) }
+body.light .modal .modal-card{ background: #fff; color: #111; border:1px solid rgba(0,0,0,0.06); box-shadow:0 18px 48px rgba(0,0,0,0.06) }
+
+/* Ensure subtle muted color adjustments for light theme */
+body.light .muted, body.light .waiting-display{ color: #666 }
+
+/* Table header labels and AWT in light mode should be dark for contrast */
+body.light .table.head > div { color: #111; font-weight:700 }
+body.light .tray-awt { color: #111; font-weight:800 }
+body.light #awtValue { color: #111; font-weight:900 }
+
